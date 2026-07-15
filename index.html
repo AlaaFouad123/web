@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الألعاب الإلكترونية والذكاء الاصطناعي</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1e38 0%, #0d0d1a 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Background Animated Particles */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: floatUp 10s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Presentation Container */
+        .presentation-container {
+            width: 90%;
+            max-width: 950px;
+            height: 600px;
+            background: rgba(30, 30, 60, 0.65);
+            border: 4px solid #4a4ae6;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 30px rgba(74, 74, 230, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Slide Styles */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            opacity: 0;
+            transform: scale(0.9) translateX(50px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        /* Typography & Content Layouts */
+        h1 {
+            font-size: 2.8rem;
+            color: #00ffcc;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+            margin-bottom: 20px;
+            font-weight: 900;
+            animation: pulse 2s infinite alternate;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #e0e0ff;
+            max-width: 800px;
+        }
+
+        .subtitle {
+            font-size: 1.6rem;
+            color: #ff66cc;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        /* Grid & Flex layouts for inner items */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #00ffcc;
+            box-shadow: 0 10px 20px rgba(0, 255, 204, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* List Items Styling */
+        .custom-list {
+            text-align: right;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .list-item {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px 20px;
+            border-radius: 15px;
+            border-right: 5px solid #ff66cc;
+        }
+
+        /* Interactive Quiz Layout */
+        .quiz-container {
+            width: 100%;
+            max-width: 650px;
+            text-align: right;
+        }
+
+        .quiz-question {
+            font-size: 1.5rem;
+            color: #00ffcc;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: white;
+            text-align: right;
+        }
+
+        .quiz-option:hover {
+            background: rgba(255,255,255,0.18);
+            border-color: #ffcc00;
+        }
+
+        .quiz-option.correct {
+            background: #2ecc71 !important;
+            border-color: #27ae60 !important;
+            color: white;
+            animation: bounce 0.5s ease;
+        }
+
+        .quiz-option.wrong {
+            background: #e74c3c !important;
+            border-color: #c0392b !important;
+            color: white;
+            animation: shake 0.4s ease;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 30px;
+        }
+
+        /* Controls / Navigation */
+        .controls {
+            position: absolute;
+            bottom: 25px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .btn {
+            background: #4a4ae6;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(74, 74, 230, 0.4);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            background: #3333cc;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(74, 74, 230, 0.6);
+        }
+
+        .btn:disabled {
+            background: #333355;
+            color: #777799;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #00ffcc;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px #00ffcc;
+        }
+
+        /* Dynamic Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* SVGs styling for gaming / AI themes */
+        .illustration {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0px 8px 10px rgba(0,0,0,0.3));
+        }
+
+        /* Responsive scaling for compact heights */
+        @media (max-height: 650px) {
+            .presentation-container { height: 100vh; width: 100vw; border-radius: 0; border: none; }
+            .controls { bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-animation" id="bgAnim"></div>
+
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active" id="slide-1">
+            <!-- Game Controller SVG -->
+            <svg class="illustration" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="64" height="64" rx="12" fill="#4a4ae6" fill-opacity="0.2"/>
+                <path d="M16 24H24M20 20V28M40 24H48M44 20V28" stroke="#00ffcc" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 36C12 44 18 48 24 48H40C46 48 52 44 52 36V28C52 22 46 16 40 16H24C18 16 12 22 12 28V36Z" stroke="#00ffcc" stroke-width="4" stroke-linejoin="round"/>
+                <circle cx="44" cy="36" r="3" fill="#ffcc00"/>
+                <circle cx="48" cy="32" r="3" fill="#ff66cc"/>
+            </svg>
+            <h1>الألعاب الإلكترونية والذكاء الاصطناعي</h1>
+            <div class="subtitle">رحلة ممتعة في عالم التكنولوجيا 🌟</div>
+        </div>
+
+        <!-- Slide 2: What are games -->
+        <div class="slide" id="slide-2">
+            <h2>ما هي الألعاب الإلكترونية؟</h2>
+            <p>الألعاب الإلكترونية هي ألعاب ممتعة ومثيرة نلعبها باستخدام الأجهزة الذكية المحيطة بنا مثل:</p>
+            <div class="grid-3">
+                <div class="card">
+                    <span class="card-icon">📱</span>
+                    <span class="card-title">الهاتف الذكي</span>
+                </div>
+                <div class="card">
+                    <span class="card-icon">💻</span>
+                    <span class="card-title">الكمبيوتر</span>
+                </div>
+                <div class="card">
+                    <span class="card-icon">🎮</span>
+                    <span class="card-title">أجهزة الألعاب</span>
+                </div>
+            </div>
+            <div class="subtitle" style="margin-top:25px; color:#00ffcc;">ومن أشهر أمثلتها: ماين كرافت 🧱 - روبلوكس 🤖 - ماريو كارت 🏎️</div>
+        </div>
+
+        <!-- Slide 3: Why we love games -->
+        <div class="slide" id="slide-3">
+            <h2>لماذا نحب الألعاب؟</h2>
+            <div class="grid-2">
+                <div class="card" style="flex-direction:row; gap:15px; justify-content:start;">
+                    <span class="card-icon">😊</span>
+                    <span class="card-title" style="font-size:1.4rem;">الاستمتاع والمرح وتغيير الجو</span>
+                </div>
+                <div class="card" style="flex-direction:row; gap:15px; justify-content:start;">
+                    <span class="card-icon">🧩</span>
+                    <span class="card-title" style="font-size:1.4rem;">التفكير الذكي وحل المشكلات</span>
+                </div>
+                <div class="card" style="flex-direction:row; gap:15px; justify-content:start;">
+                    <span class="card-icon">👥</span>
+                    <span class="card-title" style="font-size:1.4rem;">اللعب الجماعي مع الأصدقاء</span>
+                </div>
+                <div class="card" style="flex-direction:row; gap:15px; justify-content:start;">
+                    <span class="card-icon">🎯</span>
+                    <span class="card-title" style="font-size:1.4rem;">تعلم أشياء ومهارات جديدة</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: What is AI -->
+        <div class="slide" id="slide-4">
+            <!-- AI Robot Head SVG -->
+            <svg class="illustration" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="14" y="18" width="36" height="32" rx="10" stroke="#ffcc00" stroke-width="4"/>
+                <path d="M24 10V18M40 10V18M20 8H44" stroke="#ffcc00" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="25" cy="30" r="4" fill="#00ffcc"/>
+                <circle cx="39" cy="30" r="4" fill="#00ffcc"/>
+                <path d="M26 40H38" stroke="#ff66cc" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <h2>ما هو الذكاء الاصطناعي؟</h2>
+            <p style="background:rgba(255,255,255,0.05); padding:20px; border-radius:20px; border:2px dashed #ffcc00;">
+                💡 <b>الذكاء الاصطناعي:</b> هو تقنية سحرية تجعل الأجهزة والبرامج وتطبيقات الألعاب تتصرف وتفكر بطريقة ذكية تشبه تفكير الإنسان تماماً!
+            </p>
+            <div class="grid-3" style="margin-top:20px;">
+                <div class="card" style="padding:10px;"><span class="card-title">🧠 التعلّم المستمر</span></div>
+                <div class="card" style="padding:10px;"><span class="card-title">⚡ اتخاذ القرارات</span></div>
+                <div class="card" style="padding:10px;"><span class="card-title">🗣️ فهم الأوامر</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Where do we find AI -->
+        <div class="slide" id="slide-5">
+            <h2>أين نجد الذكاء الاصطناعي؟</h2>
+            <p>الذكاء الاصطناعي موجود حولنا في كل مكان نذهب إليه!</p>
+            <div class="grid-2">
+                <div class="card"><span class="card-icon">📱</span><span class="card-title">الهواتف والرقابة الذكية</span></div>
+                <div class="card"><span class="card-icon">🤖</span><span class="card-title">الروبوتات الآلية المذهلة</span></div>
+                <div class="card"><span class="card-icon">🚗</span><span class="card-title">السيارات ذاتية القيادة</span></div>
+                <div class="card"><span class="card-icon">🎮</span><span class="card-title">الألعاب الإلكترونية المفضلة</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 6: How AI is used in games -->
+        <div class="slide" id="slide-6">
+            <h2>كيف يستخدم الذكاء الاصطناعي في الألعاب؟</h2>
+            <div class="custom-list">
+                <div class="list-item">🏃 تحريك الشخصيات بشكل يبدو حقيقياً وتفاعلياً.</div>
+                <div class="list-item">🥳 جعل مغامرات اللعبة أكثر متعة وتشويقاً للاعب.</div>
+                <div class="list-item">📈 زيادة التحدي تدريجياً لكي لا تشعر بالملل.</div>
+                <div class="list-item">💬 التفاعل الذكي المباشر مع حركاتك واختياراتك.</div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Smart characters -->
+        <div class="slide" id="slide-7">
+            <h2>الشخصيات الذكية في الألعاب (NPCs)</h2>
+            <p style="margin-bottom:20px; color:#ff66cc; font-weight:bold;">هل لاحظت أن الأعداء أو الحيوانات في اللعبة يتصرفون بذكاء؟</p>
+            <div class="grid-2">
+                <div class="card" style="background:rgba(0,255,204,0.05);"><span class="card-title">🚶 المشي والجري واكتشاف الطرق</span></div>
+                <div class="card" style="background:rgba(0,255,204,0.05);"><span class="card-title">🏹 مطاردة اللاعب عند رؤيته</span></div>
+                <div class="card" style="background:rgba(0,255,204,0.05);"><span class="card-title">🛡️ الدفاع عن النفس والاختباء</span></div>
+                <div class="card" style="background:rgba(0,255,204,0.05);"><span class="card-title">🧠 اتخاذ قرارات ذكية للفوز</span></div>
+            </div>
+            <div class="subtitle" style="margin-top:20px; font-size:1.3rem;">✨ كأنها تفكر تماماً مثل الإنسان!</div>
+        </div>
+
+        <!-- Slide 8: Examples of AI Games -->
+        <div class="slide" id="slide-8">
+            <h2>أمثلة لألعاب تستخدم الذكاء الاصطناعي</h2>
+            <div class="grid-3">
+                <div class="card" style="border-top:5px solid #2ecc71;">
+                    <span style="font-size:2.5rem; margin-bottom:10px;">🧱</span>
+                    <strong style="color:#2ecc71; margin-bottom:8px;">ماين كرافت</strong>
+                    <span style="font-size:0.95rem; text-align:center;">الحيوانات والوحوش تتحرك، تبحث عن الطعام، وتتجنب الأخطار.</span>
+                </div>
+                <div class="card" style="border-top:5px solid #e74c3c;">
+                    <span style="font-size:2.5rem; margin-bottom:10px;">🤖</span>
+                    <strong style="color:#e74c3c; margin-bottom:8px;">روبلوكس</strong>
+                    <span style="font-size:0.95rem; text-align:center;">تحتوي العوالم على شخصيات مبرمجة بالذكاء الاصطناعي لمساعدتك.</span>
+                </div>
+                <div class="card" style="border-top:5px solid #3498db;">
+                    <span style="font-size:2.5rem; margin-bottom:10px;">🏎️</span>
+                    <strong style="color:#3498db; margin-bottom:8px;">ماريو كارت</strong>
+                    <span style="font-size:0.95rem; text-align:center;">المنافسون يرمون القشور ويقودون بذكاء شديد لتجاوزك!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: How AI makes games fun -->
+        <div class="slide" id="slide-9">
+            <h2>كيف يجعل الذكاء الاصطناعي الألعاب ممتعة؟</h2>
+            <div class="custom-list">
+                <div class="list-item" style="border-right-color:#00ffcc;">🎚️ يغير مستوى الصعوبة تلقائياً ليناسب مهارتك.</div>
+                <div class="list-item" style="border-right-color:#00ffcc;">🎁 يقدم لك مفاجآت وتحديات جديدة في كل مرة.</div>
+                <div class="list-item" style="border-right-color:#00ffcc;">🌌 يجعل كل تجربة لعب مختلفة تماماً عن السابقة.</div>
+                <div class="list-item" style="border-right-color:#00ffcc;">🚀 يرفع من جودة وتفاعل عالم اللعبة بالكامل.</div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Can computers play alone? -->
+        <div class="slide" id="slide-10">
+            <h2>هل يستطيع الكمبيوتر اللعب وحده؟</h2>
+            <h1 style="color:#ff3366; font-size:3.5rem;">نعم بالتأكيد! 🎉</h1>
+            <p>يمكن للذكاء الاصطناعي المتطور جداً أن:</p>
+            <div class="grid-3" style="margin-top:15px;">
+                <div class="card"><span class="card-icon">⚔️</span><span class="card-title" style="font-size:1.1rem;">يلعب ضد أقوى اللاعبين</span></div>
+                <div class="card"><span class="card-icon">📈</span><span class="card-title" style="font-size:1.1rem;">يتعلم خططاً جديدة للفوز</span></div>
+                <div class="card"><span class="card-icon">🧠</span><span class="card-title" style="font-size:1.1rem;">يحلل ويأخذ قرارات فورية</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Benefits of Games -->
+        <div class="slide" id="slide-11">
+            <h2>فوائد الألعاب الإلكترونية 🎉</h2>
+            <p style="margin-bottom:15px;">عندما نلعب باعتدال، فإننا نكسب مهارات رائعة:</p>
+            <div class="grid-2">
+                <div class="card" style="background:rgba(46, 204, 113, 0.15); border-color:#2ecc71;"><span class="card-title">🧠 تنمية الذكاء والتفكير السريع</span></div>
+                <div class="card" style="background:rgba(46, 204, 113, 0.15); border-color:#2ecc71;"><span class="card-title">👀 تحسين سرعة وقوة الملاحظة</span></div>
+                <div class="card" style="background:rgba(46, 204, 113, 0.15); border-color:#2ecc71;"><span class="card-title">🤝 تعلم العمل الجماعي مع الفريق</span></div>
+                <div class="card" style="background:rgba(46, 204, 113, 0.15); border-color:#2ecc71;"><span class="card-title">🧩 ابتكار حلول ذكية للمشكلات</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Correct use of games -->
+        <div class="slide" id="slide-12">
+            <h2>الاستخدام الصحيح والذكي للألعاب 👍</h2>
+            <p style="color:#ffcc00; margin-bottom:15px; font-weight:bold;">لكي نكون لاعبين أذكياء، يجب أن نوازن حياتنا:</p>
+            <div class="grid-2">
+                <div class="card"><span class="card-icon">⏰</span><span class="card-title">نحدد وقتاً قصيراً للعب</span></div>
+                <div class="card"><span class="card-icon">📚</span><span class="card-title">نهتم بالدراسة والواجبات</span></div>
+                <div class="card"><span class="card-icon">🏃</span><span class="card-title">نمارس الرياضة والحركة</span></div>
+                <div class="card"><span class="card-icon">👨‍👩‍👧</span><span class="card-title">نقضي وقتاً رائعاً مع عائلتنا</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Educational games -->
+        <div class="slide" id="slide-13">
+            <h2>ألعاب تعليمية مفيدة ومسلية 🌟</h2>
+            <p>هناك ألعاب مخصصة تجعلنا عباقرة وتساعدنا في تعلم الكثير من العلوم:</p>
+            <div class="grid-4" style="display:grid; grid-template-columns:repeat(4,1fr); gap:15px; width:100%; margin-top:20px;">
+                <div class="card"><span class="card-icon" style="font-size:2.5rem;">🔢</span><span class="card-title" style="font-size:1.1rem;">الرياضيات</span></div>
+                <div class="card"><span class="card-icon" style="font-size:2.5rem;">📖</span><span class="card-title" style="font-size:1.1rem;">القراءة</span></div>
+                <div class="card"><span class="card-icon" style="font-size:2.5rem;">🌍</span><span class="card-title" style="font-size:1.1rem;">اللغات</span></div>
+                <div class="card"><span class="card-icon" style="font-size:2.5rem;">🧩</span><span class="card-title" style="font-size:1.1rem;">التفكير والمنطق</span></div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Future of Gaming and AI -->
+        <div class="slide" id="slide-14">
+            <h2>مستقبل الألعاب والذكاء الاصطناعي 🚀</h2>
+            <p>كيف ستصبح الألعاب عندما تكبرون؟ ستصبح مذهلة أكثر!</p>
+            <div class="custom-list">
+                <div class="list-item" style="border-right-color:#ffcc00;">🪐 أكثر واقعية وكأنك تعيش داخلها تماماً.</div>
+                <div class="list-item" style="border-right-color:#ffcc00;">🗣️ تتحدث مع الشخصيات وتجيبك كصديق حقيقي.</div>
+                <div class="list-item" style="border-right-color:#ffcc00;">🤖 تفهم مشاعرك وما تريده بمجرد التفكير أو الإشارة.</div>
+                <div class="list-item" style="border-right-color:#ffcc00;">🎨 مليئة بالإبداع والابتكارات اللانهائية.</div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Fun Interactive Quiz -->
+        <div class="slide" id="slide-15">
+            <h2>🎮 مسابقة الذكاء الاصطناعي الممتعة 🎮</h2>
+            <div class="quiz-container">
+                <div class="quiz-question" id="quizQuestion">سؤال الاختيار من متعدد يظهر هنا...</div>
+                <div class="quiz-options" id="quizOptions">
+                    <!-- Dynamic Options -->
+                </div>
+                <div class="quiz-feedback" id="quizFeedback"></div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Final Slide -->
+        <div class="slide" id="slide-16">
+            <h1 style="font-size:4rem; color:#ff66cc; text-shadow:0 0 20px rgba(255,102,204,0.6);">شكراً لكم ❤️</h1>
+            <p style="font-size:1.8rem; margin-top:20px; color:#00ffcc; font-weight:bold;">🎮 استمتعوا بالألعاب الذكية باعتدال</p>
+            <p style="font-size:1.6rem; margin-top:10px; color:#ffcc00;">📚 وتعلّموا أشياء جديدة ومبتكرة كل يوم!</p>
+            <!-- Happy Stars Sparkle Animation Style -->
+            <div style="font-size:3rem; margin-top:20px; animation: bounce 1.5s infinite ease-in-out;">🌟 🤖 🎮</div>
+        </div>
+
+        <!-- Interactive Controls Container -->
+        <div class="controls">
+            <button class="btn" id="prevBtn" disabled>السابق ➡️</button>
+            <div class="progress-dots" id="dotsContainer"></div>
+            <button class="btn" id="nextBtn">⬅️ التالي</button>
+        </div>
+    </div>
+
+    <script>
+        // Slides Management
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dotsContainer = document.getElementById('dotsContainer');
+        let currentSlide = 0;
+
+        // Initialize progress dots
+        slides.forEach((slide, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if(index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        function updateControls() {
+            prevBtn.disabled = currentSlide === 0;
+            if (currentSlide === slides.length - 1) {
+                nextBtn.innerHTML = "البداية 🔄";
+            } else {
+                nextBtn.innerHTML = "⬅️ التالي";
+            }
+        }
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            
+            // Loop functionality for the last next button click
+            if(index >= slides.length) {
+                currentSlide = 0;
+            } else if(index < 0) {
+                currentSlide = slides.length - 1;
+            } else {
+                currentSlide = index;
+            }
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            updateControls();
+            
+            // If entering quiz slide, reset quiz
+            if(currentSlide === 14) {
+                loadQuizQuestion();
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            goToSlide(currentSlide + 1);
+        });
+
+        prevBtn.addEventListener('click', () => {
+            goToSlide(currentSlide - 1);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowLeft') {
+                goToSlide(currentSlide + 1); // For RTL layout Left moves forward
+            } else if(e.key === 'ArrowRight') {
+                goToSlide(currentSlide - 1);
+            }
+        });
+
+        // Background decorative floating bubbles generation
+        const bgAnim = document.getElementById('bgAnim');
+        const emojis = ['🎮', '🤖', '👾', '⚡', '💡', '🧱', '⭐'];
+        for (let i = 0; i < 20; i++) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            bubble.style.animationDelay = Math.random() * 8 + 's';
+            bubble.style.animationDuration = (Math.random() * 6 + 6) + 's';
+            bgAnim.appendChild(bubble);
+        }
+
+        // Quiz Questions Data Collection
+        const quizData = [
+            {
+                question: "ما هو الذكاء الاصطناعي؟",
+                options: [
+                    "تقنية تجعل الأجهزة تفكر وتتعلم مثل الإنسان 💡",
+                    "شاشة تلفزيون عادية ملونة 📺",
+                    "لعبة سيارات قديمة جداً 🏎️"
+                ],
+                correct: 0,
+                feedback: "رائع جداً! إجابة متميزة وصحيحة الذكاء الاصطناعي يمنح الأجهزة العقل والتفكير الذكي. 🎉"
+            },
+            {
+                question: "كيف يساعد الذكاء الاصطناعي في لعبة ماين كرافت؟",
+                options: [
+                    "يجعل اللعبة تنطفئ فجأة ❌",
+                    "يجعل الحيوانات والوحوش تتحرك وتبحث عن طعامها بذكاء 🐑",
+                    "يقوم بحذف اللعبة من جهازك 💻"
+                ],
+                correct: 1,
+                feedback: "بطل! إجابة صحيحة، الذكاء الاصطناعي يجعل الكائنات تتحرك بوعي وذكاء في عالم اللعبة! 💎"
+            },
+            {
+                question: "ما هو التصرف الصحيح والذكي عند لعب الألعاب الإلكترونية؟",
+                options: [
+                    "اللعب طوال اليوم ودون توقف أو دراسة 🛑",
+                    "اللعب باعتدال وتحديد وقت محدد مع الاهتمام بالدراسة والرياضة ⏰📚",
+                    "عدم التحدث مع العائلة نهائياً 🤐"
+                ],
+                correct: 2, // Map to correct option index below
+                correct: 1,
+                feedback: "أحسنت يا ذكي! التوازن وتحديد الوقت هو سر النجاح واللعب الصحي والممتع! 🌟"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function loadQuizQuestion() {
+            const currentQuiz = quizData[currentQuestionIndex];
+            document.getElementById('quizQuestion').innerText = `سؤال ${currentQuestionIndex + 1}: ${currentQuiz.question}`;
+            const optionsContainer = document.getElementById('quizOptions');
+            const feedbackContainer = document.getElementById('quizFeedback');
+            
+            optionsContainer.innerHTML = '';
+            feedbackContainer.innerText = '';
+            feedbackContainer.style.color = '';
+
+            currentQuiz.options.forEach((option, idx) => {
+                const button = document.createElement('button');
+                button.classList.add('quiz-option');
+                button.innerText = option;
+                button.addEventListener('click', () => checkAnswer(idx, button));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIdx, clickedButton) {
+            const currentQuiz = quizData[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            const feedbackContainer = document.getElementById('quizFeedback');
+
+            // Disable all options after clicking
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            if(selectedIdx === currentQuiz.correct) {
+                clickedButton.classList.add('correct');
+                feedbackContainer.innerText = currentQuiz.feedback;
+                feedbackContainer.style.color = '#2ecc71';
+                
+                // Move to next quiz question after 3 seconds if available
+                setTimeout(() => {
+                    currentQuestionIndex = (currentQuestionIndex + 1) % quizData.length;
+                    if(currentSlide === 14) { // Only load if we are still on the quiz slide
+                        loadQuizQuestion();
+                    }
+                }, 3500);
+            } else {
+                clickedButton.classList.add('wrong');
+                feedbackContainer.innerText = "حاول مرة أخرى! الإجابة غير صحيحة، فكر جيداً وأعد المحاولة 🤔";
+                feedbackContainer.style.color = '#e74c3c';
+                
+                // Re-enable options after 1.5 seconds for retry
+                setTimeout(() => {
+                    options.forEach(opt => {
+                        if(!opt.classList.contains('wrong')) {
+                            opt.style.pointerEvents = 'auto';
+                        }
+                    });
+                    feedbackContainer.innerText = '';
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
